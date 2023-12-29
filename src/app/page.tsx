@@ -31,9 +31,15 @@ type Menu = {
 
 export default function Home() {
   const [selectedMeal, setSelectedMeal] = useState<Menu>({});
+  const [selectedMenu, setSelectedMenu] = useState<Menu[]>([]);
   const [shoppingList, setShoppingList] = useState<Set<string>>(new Set());
 
   const handleAddMealToShoppingList = () => {
+    setSelectedMenu((prevSelectedMenu) => [
+      ...prevSelectedMenu,
+      selectedMeal as Menu,
+    ]);
+
     setShoppingList((prevShoppingList) => {
       const keys = Object.keys(selectedMeal);
       let values: string[] = [];
@@ -41,20 +47,12 @@ export default function Home() {
       for (const key of keys) {
         if (selectedMeal[key].ingredients.length > 0) {
           values.push(...selectedMeal[key].ingredients);
+        } else {
+          values.push(selectedMeal[key].title);
         }
-
-        values.push(selectedMeal[key].title);
       }
 
       return new Set<string>([...prevShoppingList, ...values]);
-
-      // const values = Object.values(selectedMeal);
-
-      // const newItems = values.filter((item) => !prevShoppingList.has(item));
-
-      // console.log(newItems);
-
-      // return new Set<string>([...prevShoppingList, ...newItems]);
     });
   };
 
@@ -90,7 +88,7 @@ export default function Home() {
 
             <CardFooter>
               <Button onClick={handleAddMealToShoppingList}>
-                Adicionar a lista de compras
+                Selecionar receita
               </Button>
             </CardFooter>
           </Card>
@@ -128,6 +126,30 @@ export default function Home() {
             </DropdownMenu>
           </CardFooter>
         </Card>
+      </div>
+
+      <span className="text-2xl font-semibold p-6">Refeições Selecionadas</span>
+
+      <div className="flex p-6 gap-6">
+        {selectedMenu.map((menu, index) => {
+          return (
+            <Card key={index} className="w-[350px]">
+              <CardHeader>
+                <CardTitle>Refeição</CardTitle>
+                <CardDescription>Ingredientes e tals</CardDescription>
+              </CardHeader>
+
+              <CardContent className="flex flex-col gap-2">
+                <Label>Salada: {menu?.salad?.title}</Label>
+                <Label>Carboidrato: {menu?.carbo?.title}</Label>
+                <Label>Fruta: {menu?.fruit?.title}</Label>
+                <Label>Grão: {menu?.grain?.title}</Label>
+                <Label>Proteína: {menu?.protein?.title}</Label>
+                <Label>Vegetal: {menu?.vegetable?.title}</Label>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </main>
   );
