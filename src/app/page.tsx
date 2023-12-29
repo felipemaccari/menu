@@ -14,15 +14,20 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { menus } from "@/data/menus";
-import { Menu } from "@/types/menus";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+type Menu = {
+  [key: string]: {
+    title: string;
+    ingredients: string[];
+  };
+};
 
 export default function Home() {
   const [selectedMeal, setSelectedMeal] = useState<Menu>({});
@@ -30,9 +35,26 @@ export default function Home() {
 
   const handleAddMealToShoppingList = () => {
     setShoppingList((prevShoppingList) => {
-      const values = Object.values(selectedMeal);
-      const newItems = values.filter((item) => !prevShoppingList.has(item));
-      return new Set<string>([...prevShoppingList, ...newItems]);
+      const keys = Object.keys(selectedMeal);
+      let values: string[] = [];
+
+      for (const key of keys) {
+        if (selectedMeal[key].ingredients.length > 0) {
+          values.push(...selectedMeal[key].ingredients);
+        }
+
+        values.push(selectedMeal[key].title);
+      }
+
+      return new Set<string>([...prevShoppingList, ...values]);
+
+      // const values = Object.values(selectedMeal);
+
+      // const newItems = values.filter((item) => !prevShoppingList.has(item));
+
+      // console.log(newItems);
+
+      // return new Set<string>([...prevShoppingList, ...newItems]);
     });
   };
 
@@ -40,7 +62,7 @@ export default function Home() {
     const randomIndex = Math.floor(Math.random() * menus.length);
     const randomMeal = menus[randomIndex];
 
-    setSelectedMeal(randomMeal);
+    setSelectedMeal(randomMeal as Menu);
   };
 
   return (
@@ -58,12 +80,12 @@ export default function Home() {
             </CardHeader>
 
             <CardContent className="flex flex-col gap-2">
-              <Label>Salada: {selectedMeal?.salad}</Label>
-              <Label>Carboidrato: {selectedMeal?.carbo}</Label>
-              <Label>Fruta: {selectedMeal?.fruit}</Label>
-              <Label>Grão: {selectedMeal?.grain}</Label>
-              <Label>Proteína: {selectedMeal?.protein}</Label>
-              <Label>Vegetal: {selectedMeal?.vegetable}</Label>
+              <Label>Salada: {selectedMeal?.salad?.title}</Label>
+              <Label>Carboidrato: {selectedMeal?.carbo?.title}</Label>
+              <Label>Fruta: {selectedMeal?.fruit?.title}</Label>
+              <Label>Grão: {selectedMeal?.grain?.title}</Label>
+              <Label>Proteína: {selectedMeal?.protein?.title}</Label>
+              <Label>Vegetal: {selectedMeal?.vegetable?.title}</Label>
             </CardContent>
 
             <CardFooter>

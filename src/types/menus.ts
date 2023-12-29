@@ -1,8 +1,12 @@
+export interface MealProps {
+  title: string;
+  ingredients: string[];
+}
 export interface Menu {
-  salad?: string;
-  vegetable?: string;
-  protein?: string;
-  carbo?: string;
-  grain?: string;
-  fruit?: string;
+  salad?: MealProps;
+  vegetable?: MealProps;
+  protein?: MealProps;
+  carbo?: MealProps;
+  grain?: MealProps;
+  fruit?: MealProps;
 }
